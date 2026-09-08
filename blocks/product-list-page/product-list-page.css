@@ -17,6 +17,10 @@
     margin-block-end: var(--spacing-small);
 }
 
+.block.product-list-page .search__product-list .dropin-image {
+    object-fit: contain;
+}
+
 .block.product-list-page .search__result-info strong {
     font-weight: 600;
 }

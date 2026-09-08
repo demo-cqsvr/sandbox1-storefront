@@ -803,6 +803,10 @@ header .nav-search-input .search_autocomplete .popover-container {
   max-height: 15rem;
 }
 
+.header .search-bar-result .dropin-image {
+  object-fit: contain;
+}
+
 /* Seller Assisted Buying Banner - Session Indicator */
 body:has(.seller-assisted-buying-banner) {
   padding-top: var(--spacing-xxbig);
