@@ -13,6 +13,7 @@
 /* stylelint-disable no-empty-source */
 :root, .dropin-design {
   /* Adobe Commerce Dropin design tokens */
+
   /* myAEON2go brand palette (matches sandbox1.cqsvr.com storefront) */
   --color-brand-300: #dd5f93;
   --color-brand-500: #c2185b;

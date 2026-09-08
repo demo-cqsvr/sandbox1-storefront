@@ -644,11 +644,14 @@ function getDefaultSkuFromBlock() {
   }
 
   const config = readBlockConfig(productDetailsBlock);
-  if (!config.defaultsku) {
+  const sku = config.defaultsku || productDetailsBlock.dataset.defaultSku;
+  if (!sku) {
     console.warn('No defaultSku found in product-details block');
     return null;
   }
-  return config.defaultsku;
+  // Preserve the authored SKU when the gallery replaces the block's children.
+  productDetailsBlock.dataset.defaultSku = sku;
+  return sku;
 }
 
 /**
@@ -678,7 +681,7 @@ export function getProductLink(urlKey, sku) {
 }
 
 /**
- * Gets the product SKU from metadata or URL fallback.
+ * Gets the case-sensitive product SKU from metadata, authored content, or the URL.
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
@@ -686,7 +689,7 @@ export function getProductSku() {
     return getDefaultSkuFromBlock();
   }
 
-  return getMetadata('sku') || getSkuFromUrl();
+  return getMetadata('sku') || getDefaultSkuFromBlock() || getSkuFromUrl();
 }
 
 /**
