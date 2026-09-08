@@ -1,3 +1,4 @@
+import { getRootPath } from '@dropins/tools/lib/aem/configs.js';
 import {
   loadHeader,
   loadFooter,
@@ -193,6 +194,24 @@ export function decorateMain(main) {
   decorateButtons(main);
 }
 
+/** Composes the branded homepage without changing product or account pages. */
+function buildStorefrontHome(main) {
+  const root = getRootPath().replace(/\/$/, '');
+  if (window.location.pathname !== `${root}/`) return;
+
+  document.body.classList.add('myaeon-homepage');
+  document.title = 'myAEON2go | Fresh picks and everyday essentials';
+  const description = document.querySelector('meta[name="description"]');
+  if (description) {
+    description.content = 'Shop featured products, everyday essentials and the latest myAEON2go offers.';
+  }
+  if (main.querySelector('.myaeon-home')) return;
+
+  const section = document.createElement('div');
+  section.append(buildBlock('myaeon-home', ''));
+  main.replaceChildren(section);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -205,6 +224,7 @@ async function loadEager(doc) {
   if (main) {
     try {
       await initializeCommerce();
+      buildStorefrontHome(main);
       decorateMain(main);
       applyTemplates(doc);
       await loadCommerceEager();

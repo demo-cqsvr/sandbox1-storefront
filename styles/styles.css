@@ -165,7 +165,7 @@ body:not(.appear) {
 
 header {
   grid-row: 1;
-  height: var(--nav-height);
+  height: auto;
 }
 
 main {
@@ -470,6 +470,36 @@ main > .section > div {
   max-width: 1200px;
   margin: auto;
   padding: 0 var(--spacing-medium);
+}
+
+body.myaeon-homepage {
+  background: #f7f5f6;
+}
+
+body > header {
+  min-height: 278px;
+}
+
+body > header,
+.myaeon-homepage main {
+  font-family: 'Open Sans', arial, sans-serif;
+  letter-spacing: normal;
+}
+
+@media (min-width: 900px) {
+  body > header {
+    min-height: 174px;
+  }
+}
+
+.myaeon-homepage main > .section {
+  margin: 0;
+}
+
+.myaeon-homepage main > .section > div {
+  box-sizing: border-box;
+  max-width: 1440px;
+  padding: 24px 20px 48px;
 }
 
 main > .section:first-of-type {
