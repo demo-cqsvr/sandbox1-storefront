@@ -8,31 +8,12 @@ import {
 } from '@dropins/tools/lib/aem/configs.js';
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
+import { getCatalogProductLink } from './catalog-routes.js';
 import {
   getMetadata,
   readBlockConfig,
 } from './aem.js';
 import initializeDropins from './initializers/index.js';
-
-/**
- * Sanitizes the given string by:
- * - convert to lower case
- * - normalize all unicode characters
- * - replace all non-alphanumeric characters with a dash
- * - remove all consecutive dashes
- * - remove all leading and trailing dashes
- *
- * @param {string} name
- * @returns {string} sanitized name
- */
-function sanitizeName(name) {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-}
 
 /**
  * Fetch GraphQL Instances
@@ -675,9 +656,7 @@ export function getProductLink(urlKey, sku) {
   if (!sku) {
     console.warn('getProductLink: sku is missing or empty', { urlKey, sku });
   }
-  const sanitizedUrlKey = urlKey ? sanitizeName(urlKey) : '';
-  const sanitizedSku = sku ? sanitizeName(sku) : '';
-  return rootLink(`/products/${sanitizedUrlKey}/${sanitizedSku}`);
+  return rootLink(getCatalogProductLink(sku || ''));
 }
 
 /**
@@ -685,6 +664,11 @@ export function getProductLink(urlKey, sku) {
  * @returns {string|null} The SKU from metadata or URL, or null if not found
  */
 export function getProductSku() {
+  if (isProductTemplate() && !IS_UE && !IS_DA) {
+    const sku = new URLSearchParams(window.location.search).get('sku');
+    if (sku !== null) return sku;
+  }
+
   if (isProductTemplate() && (IS_UE || IS_DA)) {
     return getDefaultSkuFromBlock();
   }

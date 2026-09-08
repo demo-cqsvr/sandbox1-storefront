@@ -126,6 +126,7 @@ export function getSearchStateFromUrl(url) {
  *   Search request from the discovery API; only set params are written to the URL.
  */
 export function applySearchStateToUrl(url, request) {
+  if (request?.phrase === '') url.searchParams.delete('q');
   if (request?.phrase) {
     url.searchParams.set('q', request.phrase);
   }
@@ -137,7 +138,8 @@ export function applySearchStateToUrl(url, request) {
   }
   if (request?.filter != null) {
     // Don't add visibility filter to the URL, since we always add it in product-list-page.js
-    const urlFilters = request.filter.filter((f) => f.attribute !== 'visibility');
+    const urlFilters = request.filter.filter((f) => f.attribute !== 'visibility'
+      && !(url.searchParams.has('category') && f.attribute === 'categoryPath'));
     url.searchParams.set('filter', serializeFilter(urlFilters));
   }
 }

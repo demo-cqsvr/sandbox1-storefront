@@ -34,7 +34,7 @@ import {
 } from '../../scripts/commerce.js';
 
 // Initializers
-import { IMAGES_SIZES } from '../../scripts/initializers/pdp.js';
+import { IMAGES_SIZES, productLoadState } from '../../scripts/initializers/pdp.js';
 import '../../scripts/initializers/cart.js';
 import '../../scripts/initializers/wishlist.js';
 
@@ -82,6 +82,27 @@ function formatNumericAttributeValue(value) {
 }
 
 export default async function decorate(block) {
+  if (productLoadState.status === 'not-found' || productLoadState.status === 'error') {
+    const notFound = productLoadState.status === 'not-found';
+    const message = document.createElement('div');
+    message.className = 'product-details__unavailable';
+    message.setAttribute('role', 'status');
+    const heading = document.createElement('h1');
+    heading.textContent = notFound ? 'Product not found' : 'Unable to load this product';
+    const explanation = document.createElement('p');
+    explanation.textContent = notFound
+      ? 'This product is unavailable. Search the store to find another product.'
+      : 'Please try loading this page again.';
+    const link = document.createElement('a');
+    link.href = notFound ? rootLink('/search') : window.location.href;
+    link.textContent = notFound ? 'Search products' : 'Try again';
+    message.append(heading, explanation, link);
+    block.replaceChildren(message);
+    document.title = `${heading.textContent} | myAEON2go`;
+    createMetaTag('robots', 'noindex', 'name');
+    return undefined;
+  }
+
   const eventProduct = events.lastPayload('pdp/data') ?? null;
   // bug: the pdp sends an object with event data even if product is not found.
   const product = eventProduct?.sku ? eventProduct : null;
@@ -473,7 +494,7 @@ async function setJsonLdProduct(product) {
     '@type': 'Product',
     name,
     description,
-    image: images[0]?.url,
+    image: images?.[0]?.url,
     offers: [],
     productID: sku,
     brand: {
@@ -540,7 +561,15 @@ function setMetaTags(product) {
     return;
   }
 
-  const price = product.prices.final.minimumAmount ?? product.prices.final.amount;
+  const price = product.prices?.final?.minimumAmount ?? product.prices?.final?.amount;
+  const productUrl = new URL(getProductLink(product.urlKey, product.sku), window.location);
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    document.head.append(canonical);
+  }
+  canonical.href = productUrl.href;
 
   createMetaTag('title', product.metaTitle || product.name, 'name');
   createMetaTag('description', product.metaDescription, 'name');
@@ -549,13 +578,13 @@ function setMetaTags(product) {
   createMetaTag('og:type', 'product', 'property');
   createMetaTag('og:description', product.shortDescription, 'property');
   createMetaTag('og:title', product.metaTitle || product.name, 'property');
-  createMetaTag('og:url', window.location.href, 'property');
-  const mainImage = product?.images?.filter((image) => image.roles.includes('thumbnail'))[0];
-  const metaImage = mainImage?.url || product?.images[0]?.url;
+  createMetaTag('og:url', productUrl.href, 'property');
+  const mainImage = product.images?.find((image) => image.roles?.includes('thumbnail'));
+  const metaImage = mainImage?.url || product.images?.[0]?.url;
   createMetaTag('og:image', metaImage, 'property');
   createMetaTag('og:image:secure_url', metaImage, 'property');
-  createMetaTag('product:price:amount', price.value, 'property');
-  createMetaTag('product:price:currency', price.currency, 'property');
+  createMetaTag('product:price:amount', price?.value, 'property');
+  createMetaTag('product:price:currency', price?.currency, 'property');
 }
 
 /**

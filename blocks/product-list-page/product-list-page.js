@@ -17,16 +17,103 @@ import { events } from '@dropins/tools/event-bus.js';
 // AEM
 import { readBlockConfig } from '../../scripts/aem.js';
 import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
+import { categories, getCategoryLink } from '../../scripts/catalog-routes.js';
+import { getCategoryContext } from './category-context.js';
 import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
 import '../../scripts/initializers/wishlist.js';
 
-export default async function decorate(block) {
-  const labels = await fetchPlaceholders();
+function updateCategoryMetadata(context) {
+  const title = `${context.error ? 'Category not found' : context.title} | myAEON2go`;
+  document.title = title;
+  function setMeta(attribute, name, content) {
+    let meta = document.head.querySelector(`meta[${attribute}="${name}"]`);
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute(attribute, name);
+      document.head.append(meta);
+    }
+    meta.content = content;
+  }
+  setMeta('property', 'og:title', title);
+  if (context.error) {
+    setMeta('name', 'robots', 'noindex');
+    return;
+  }
+  const canonicalUrl = new URL(getCategoryLink(context.isAll ? 'all' : context.path), window.location);
+  let canonical = document.head.querySelector('link[rel="canonical"]');
+  if (!canonical) {
+    canonical = document.createElement('link');
+    canonical.rel = 'canonical';
+    document.head.append(canonical);
+  }
+  canonical.href = canonicalUrl.href;
+  setMeta('property', 'og:url', canonicalUrl.href);
+}
 
+function buildCategoryHeading(context) {
+  const heading = document.createElement('div');
+  heading.className = 'search__category-heading';
+  const breadcrumbs = document.createElement('nav');
+  breadcrumbs.className = 'search__category-breadcrumbs';
+  breadcrumbs.setAttribute('aria-label', 'Breadcrumb');
+  const list = document.createElement('ol');
+  const crumbs = [{ name: 'Home', href: '/' }];
+  if (!context.isAll) crumbs.push({ name: 'All products', href: getCategoryLink('all') });
+  context.ancestors.forEach((category) => crumbs.push({
+    name: category.name, href: getCategoryLink(category.path),
+  }));
+  crumbs.forEach(({ name, href }) => {
+    const item = document.createElement('li');
+    const link = document.createElement('a');
+    link.textContent = name;
+    link.href = href;
+    item.append(link);
+    list.append(item);
+  });
+  const current = document.createElement('li');
+  current.textContent = context.title;
+  current.setAttribute('aria-current', 'page');
+  list.append(current);
+  breadcrumbs.append(list);
+  const title = document.createElement('h1');
+  title.textContent = context.title;
+  heading.append(breadcrumbs, title);
+  if (context.children.length) {
+    const children = document.createElement('nav');
+    children.className = 'search__category-children';
+    children.setAttribute('aria-label', 'Shop subcategories');
+    context.children.forEach((category) => {
+      const link = document.createElement('a');
+      link.href = getCategoryLink(category.path);
+      link.textContent = category.name;
+      children.append(link);
+    });
+    heading.append(children);
+  }
+  return heading;
+}
+
+export default async function decorate(block) {
   const config = readBlockConfig(block);
+  const categoryContext = getCategoryContext(new URL(window.location.href), categories);
+  if (categoryContext) updateCategoryMetadata(categoryContext);
+  if (categoryContext?.error) {
+    const title = document.createElement('h1');
+    title.textContent = 'Category not found';
+    const message = document.createElement('p');
+    message.textContent = 'This category is not available. Browse all products to continue shopping.';
+    const link = document.createElement('a');
+    link.href = getCategoryLink('all');
+    link.textContent = 'Browse all products';
+    block.replaceChildren(title, message, link);
+    return;
+  }
+  if (categoryContext) config.urlpath = categoryContext.path;
+  const isCatalog = Boolean(categoryContext || config.urlpath);
+  const labels = await fetchPlaceholders();
   const pageSize = parseInt(config.pagesize, 10) || 9;
 
   const fragment = document.createRange().createContextualFragment(`
@@ -48,6 +135,7 @@ export default async function decorate(block) {
   const $pagination = fragment.querySelector('.search__pagination');
 
   block.innerHTML = '';
+  if (categoryContext) block.append(buildCategoryHeading(categoryContext));
   block.appendChild(fragment);
 
   // Add url path back to the block for enrichment, incase enrichment block is
@@ -59,8 +147,13 @@ export default async function decorate(block) {
   const searchState = getSearchStateFromUrl(new URL(window.location.href));
 
   // Default visibility filter for all of our requests
-  const visibilityFilter = { attribute: 'visibility', in: ['Search', 'Catalog, Search'] };
-  const userFilters = searchState.filter.filter((f) => f.attribute !== 'visibility');
+  if (isCatalog) searchState.phrase = '';
+  const visibilityFilter = {
+    attribute: 'visibility',
+    in: [isCatalog ? 'Catalog' : 'Search', 'Catalog, Search'],
+  };
+  const userFilters = searchState.filter.filter((f) => f.attribute !== 'visibility'
+    && !(isCatalog && f.attribute === 'categoryPath'));
 
   // Normalize URL (e.g. pipe-separated filter values)
   const normalizedUrl = new URL(window.location.href);

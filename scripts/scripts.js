@@ -212,6 +212,32 @@ function buildStorefrontHome(main) {
   main.replaceChildren(section);
 }
 
+/** Keeps the authored default PDP as a shared SKU-driven product template. */
+function buildStorefrontProduct(main) {
+  const root = getRootPath().replace(/\/$/, '');
+  if (window.location.pathname !== `${root}/products/default`
+    || !new URLSearchParams(window.location.search).has('sku')) return;
+
+  const productDetails = main.querySelector('.product-details') || buildBlock('product-details', '');
+  const section = document.createElement('div');
+  section.append(productDetails);
+  main.replaceChildren(section);
+  document.title = 'Product | myAEON2go';
+
+  // The template's authored product metadata must not describe the requested SKU.
+  document.head.querySelectorAll('script[type="application/ld+json"]').forEach((script) => {
+    try {
+      const data = JSON.parse(script.textContent);
+      const entries = Array.isArray(data) ? data : [data, ...(data?.['@graph'] || [])];
+      if (entries.some((entry) => entry?.['@type'] === 'Product')) script.remove();
+    } catch {
+      // Leave unrelated authored structured data unchanged.
+    }
+  });
+  document.head.querySelectorAll('meta[name="title"], meta[name="description"], meta[name="keywords"], meta[property^="og:"], meta[property^="product:"]').forEach((meta) => meta.remove());
+  document.head.querySelector('link[rel="canonical"]')?.remove();
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -225,6 +251,7 @@ async function loadEager(doc) {
     try {
       await initializeCommerce();
       buildStorefrontHome(main);
+      buildStorefrontProduct(main);
       decorateMain(main);
       applyTemplates(doc);
       await loadCommerceEager();

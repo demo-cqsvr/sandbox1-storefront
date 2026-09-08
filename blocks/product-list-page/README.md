@@ -62,3 +62,21 @@ A visibility filter `{ attribute: 'visibility', in: ['Search', 'Catalog, Search'
 
 - **Search API errors**: Initial `search()` calls are wrapped in `.catch()`; errors are logged with `console.error('Error searching for products', e)`. The block does not show an inline error UI; the dropin may show its own state.
 - **Missing payload**: Result count and filter-count updates guard with `payload.result?.totalCount`, `payload.request?.phrase`, and `payload.request.filter.length` where appropriate.
+
+## Category browsing
+
+`/search?category=<encoded category path>` uses the category snapshot exported by
+`scripts/catalog-routes.js`. Known category paths use the discovery `categoryPath`
+filter with an empty search phrase and Catalog visibility. `category=all` requests
+all catalog-visible products without a category filter. Unknown or empty category
+parameters show an explicit category-not-found message and do not call search.
+Search URLs without `category` retain the standard phrase search behavior.
+
+Category pages include an h1, ancestor breadcrumbs, and direct child-category
+links. Filtering, sorting and pagination preserve the `category` query parameter.
+The category filter and visibility are not duplicated in serialized URL filters;
+an empty catalog phrase removes a stale `q` parameter.
+
+Run `node --test blocks/product-list-page/category-context.test.mjs` for category
+resolution, rejection, and category URL persistence coverage. Verify the actual
+category request and filter/pagination interactions in the storefront browser.

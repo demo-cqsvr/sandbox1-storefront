@@ -1,3 +1,5 @@
+import { getCatalogProductLink, getCategoryLink } from './catalog-routes.js';
+
 // Curated public reference content. See images/myaeon/SOURCES.md.
 export const homeContent = {
   brand: {
@@ -39,7 +41,7 @@ export const homeContent = {
       name: 'Japanese Cheese Cake',
       image: '/images/myaeon/products-1.webp',
       priceText: 'MYR 19.90',
-      href: 'https://sandbox1.cqsvr.com/japanese-cheese-cake.html',
+      href: getCatalogProductLink('aeon-cheesecake'),
       width: 240,
       height: 300,
     },
@@ -47,7 +49,7 @@ export const homeContent = {
       name: 'Salmon & California Roll Set',
       image: '/images/myaeon/products-2.webp',
       priceText: 'MYR 18.90',
-      href: 'https://sandbox1.cqsvr.com/salmon-california-roll-set.html',
+      href: getCatalogProductLink('aeon-salmon-california-roll'),
       width: 240,
       height: 300,
     },
@@ -55,7 +57,7 @@ export const homeContent = {
       name: 'Sunlight Dishwash Liquid Lemon',
       image: '/images/myaeon/products-3.webp',
       priceText: 'MYR 4.60',
-      href: 'https://sandbox1.cqsvr.com/sunlight-dishwash-liquid-lemon.html',
+      href: getCatalogProductLink('aeon-sunlight-dishwash-lemon'),
       width: 240,
       height: 300,
     },
@@ -63,7 +65,7 @@ export const homeContent = {
       name: 'TOP Liquid Detergent Brilliant Clean',
       image: '/images/myaeon/products-4.webp',
       priceText: 'MYR 17.90',
-      href: 'https://sandbox1.cqsvr.com/top-liquid-detergent-brilliant-clean.html',
+      href: getCatalogProductLink('aeon-top-liquid-detergent-brilliant-clean'),
       width: 240,
       height: 300,
     },
@@ -71,7 +73,7 @@ export const homeContent = {
       name: 'Naturel Pure Olive Oil',
       image: '/images/myaeon/products-5.webp',
       priceText: 'MYR 36.99',
-      href: 'https://sandbox1.cqsvr.com/naturel-pure-olive-oil.html',
+      href: getCatalogProductLink('aeon-naturel-olive-oil'),
       width: 240,
       height: 300,
     },
@@ -79,7 +81,7 @@ export const homeContent = {
       name: 'Milo Activ-Go Plus',
       image: '/images/myaeon/products-6.webp',
       priceText: 'MYR 841.00',
-      href: '/products/milo-activ-go-plus/aeonmy-6308',
+      href: getCatalogProductLink('AEONMY-6308'),
       width: 240,
       height: 300,
     },
@@ -87,7 +89,7 @@ export const homeContent = {
       name: 'Milo Activ-Go Soft Pack',
       image: '/images/myaeon/products-7.webp',
       priceText: 'MYR 1,197.00',
-      href: '/products/milo-activ-go-soft-pack/aeonmy-6316',
+      href: getCatalogProductLink('AEONMY-6316'),
       width: 240,
       height: 300,
     },
@@ -95,7 +97,7 @@ export const homeContent = {
       name: 'Milo Activ-Go Refill Pack',
       image: '/images/myaeon/products-8.webp',
       priceText: 'MYR 341.00',
-      href: '/products/milo-activ-go-refill-pack/aeonmy-8513',
+      href: getCatalogProductLink('AEONMY-8513'),
       width: 240,
       height: 300,
     },
@@ -103,7 +105,7 @@ export const homeContent = {
       name: 'Dutch Lady UHT Pure Farm Full Cream Milk',
       image: '/images/myaeon/products-9.webp',
       priceText: 'MYR 562.00',
-      href: '/products/dutch-lady-uht-pure-farm-full-cream-milk-aeonmy-5519/aeonmy-5519',
+      href: getCatalogProductLink('AEONMY-5519'),
       width: 240,
       height: 300,
     },
@@ -111,7 +113,7 @@ export const homeContent = {
       name: 'Milo UHT',
       image: '/images/myaeon/products-10.webp',
       priceText: 'MYR 276.00',
-      href: '/products/milo-uht/aeonmy-49558',
+      href: getCatalogProductLink('AEONMY-49558'),
       width: 240,
       height: 300,
     },
@@ -119,7 +121,7 @@ export const homeContent = {
       name: 'Milo Activ-Go Softpack',
       image: '/images/myaeon/products-11.webp',
       priceText: 'MYR 1,197.00',
-      href: '/products/milo-activ-go-softpack/aeonmy-12036',
+      href: getCatalogProductLink('AEONMY-12036'),
       width: 240,
       height: 300,
     },
@@ -127,7 +129,7 @@ export const homeContent = {
       name: 'Spritzer Sparkling Mineral Water',
       image: '/images/myaeon/products-12.webp',
       priceText: 'MYR 110.00',
-      href: '/products/spritzer-sparkling-mineral-water/aeonmy-958',
+      href: getCatalogProductLink('AEONMY-958'),
       width: 240,
       height: 300,
     },
@@ -135,35 +137,35 @@ export const homeContent = {
   categories: [
     {
       name: 'Aeon Fresh',
-      href: 'https://sandbox1.cqsvr.com/aeon-fresh.html',
+      href: getCategoryLink('aeon-fresh'),
     },
     {
       name: 'Ready To Eat',
-      href: 'https://sandbox1.cqsvr.com/aeon-fresh/ready-to-eat.html',
+      href: getCategoryLink('aeon-fresh/ready-to-eat'),
     },
     {
       name: 'Baby & Kids',
-      href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-baby-kids.html',
+      href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-baby-kids'),
     },
     {
       name: 'Household',
-      href: 'https://sandbox1.cqsvr.com/aeon-fresh/household.html',
+      href: getCategoryLink('aeon-fresh/household'),
     },
     {
       name: 'myAEON2go',
-      href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2.html',
+      href: getCategoryLink('myaeon-importer-v1-root-2'),
     },
     {
       name: 'Beverages',
-      href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-beverages.html',
+      href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-beverages'),
     },
     {
       name: 'Grocery',
-      href: 'https://sandbox1.cqsvr.com/aeon-fresh/grocery.html',
+      href: getCategoryLink('aeon-fresh/grocery'),
     },
     {
       name: 'Snacks',
-      href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-snacks.html',
+      href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-snacks'),
     },
   ],
   offers: [
@@ -183,59 +185,60 @@ export const homeContent = {
     },
   ],
   navigation: [
+    { name: 'All Products', href: getCategoryLink() },
     {
       name: 'Aeon Fresh',
-      href: 'https://sandbox1.cqsvr.com/aeon-fresh.html',
+      href: getCategoryLink('aeon-fresh'),
       children: [
         {
           name: 'Aeon Fresh',
-          href: 'https://sandbox1.cqsvr.com/aeon-fresh.html',
+          href: getCategoryLink('aeon-fresh'),
         },
         {
           name: 'Ready To Eat',
-          href: 'https://sandbox1.cqsvr.com/aeon-fresh/ready-to-eat.html',
+          href: getCategoryLink('aeon-fresh/ready-to-eat'),
         },
         {
           name: 'Household',
-          href: 'https://sandbox1.cqsvr.com/aeon-fresh/household.html',
+          href: getCategoryLink('aeon-fresh/household'),
         },
         {
           name: 'Grocery',
-          href: 'https://sandbox1.cqsvr.com/aeon-fresh/grocery.html',
+          href: getCategoryLink('aeon-fresh/grocery'),
         },
       ],
     },
     {
       name: 'myAEON2go',
-      href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2.html',
+      href: getCategoryLink('myaeon-importer-v1-root-2'),
       children: [
         {
           name: 'myAEON2go',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2'),
         },
         {
           name: 'Baby & Kids',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-baby-kids.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-baby-kids'),
         },
         {
           name: 'Beverages',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-beverages.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-beverages'),
         },
         {
           name: 'Snacks',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-snacks.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-snacks'),
         },
         {
           name: 'Grocery',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-grocery.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-grocery'),
         },
         {
           name: 'Personal Care',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-personal-care.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-personal-care'),
         },
         {
           name: 'Household',
-          href: 'https://sandbox1.cqsvr.com/myaeon-importer-v1-root-2/myaeon-importer-v1-household.html',
+          href: getCategoryLink('myaeon-importer-v1-root-2/myaeon-importer-v1-household'),
         },
       ],
     },
