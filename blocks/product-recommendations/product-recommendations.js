@@ -117,6 +117,14 @@ export function getPurchaseHistory() {
 }
 
 export default async function decorate(block) {
+  const { currentsku, currentprice, recid } = readBlockConfig(block);
+  // The boilerplate sample unit does not exist in this store's recommendation service.
+  const pdpProduct = events.lastPayload('pdp/data');
+  const missingProduct = document.querySelector('.product-details') && !pdpProduct?.sku;
+  if (!recid || recid === 'cf042e53-7efb-4a7e-b1bd-4f87d5c6ca84' || missingProduct) {
+    block.hidden = true;
+    return;
+  }
   const labels = await fetchPlaceholders();
 
   // Hide configuration rows if they exist
@@ -124,9 +132,6 @@ export default async function decorate(block) {
   children.forEach((child) => {
     child.style.display = 'none';
   });
-
-  // Configuration
-  const { currentsku, currentprice, recid } = readBlockConfig(block);
 
   // Layout
   const fragment = document.createRange().createContextualFragment(`
@@ -136,7 +141,6 @@ export default async function decorate(block) {
   `);
 
   const $list = fragment.querySelector('.recommendations__list');
-  const $wrapper = fragment.querySelector('.recommendations__wrapper');
 
   block.appendChild(fragment);
 
@@ -196,7 +200,7 @@ export default async function decorate(block) {
 
     try {
       const skuFromConfig = !!currentsku;
-      const resolvedSku = currentsku || context.currentSku;
+      const resolvedSku = currentsku || pdpProduct?.sku || context.currentSku;
       const isACO = getConfigValue('adobe-commerce-optimizer') === true
         || getConfigValue('adobe-commerce-optimizer') === 'true';
       // Price source must match SKU source: if SKU is pinned via block config,
@@ -303,7 +307,7 @@ export default async function decorate(block) {
               });
             },
           },
-        })($wrapper),
+        })(container),
       ]);
     } finally {
       isLoading = false;
@@ -388,6 +392,8 @@ export default async function decorate(block) {
     dl.addEventListener('adobeDataLayer:change', handleCategoryChanges, { path: 'categoryContext' });
     dl.addEventListener('adobeDataLayer:change', handleCartChanges, { path: 'shoppingCartContext' });
   });
+
+  debouncedLoadRecommendation();
 
   if (isMobile) {
     const section = block.closest('.section');

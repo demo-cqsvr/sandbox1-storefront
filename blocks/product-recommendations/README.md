@@ -60,3 +60,11 @@ No URL parameters directly affect this block's behavior. -->
 - **Missing SKU**: If the recommendation type requires a current SKU but none is available (neither from block config nor from ACDL), an error is logged to the browser console
 - **Image Rendering Errors**: If product images fail to load, the image slots handle fallback behavior
 - **Fallback Behavior**: Always falls back to appropriate default values for missing or invalid configuration
+
+## myAEON product pages
+
+All product detail pages receive the store's active `viewed-viewed` unit (`cb0289f6-3a00-4c00-a0b7-dbd53270cd47`). The shared product template adds the block automatically; authored product pages replace only the boilerplate sample unit, preserving other authored units. The current SKU comes from the resolved PDP payload, preserving case even for lowercase authored URLs. Unknown products and unused boilerplate units do not request recommendations.
+
+Results render inside the tracked list container to avoid duplicate rendering when page context changes. Recommendation images retain their aspect ratio, and product links use the shared internal EDS product route. The existing drop-in publishes recommendation impression/view/click events and supports adding recommended products to the cart.
+
+The currently configured service has a product-page unit only. Home, category and cart recommendation units are not configured by this change.

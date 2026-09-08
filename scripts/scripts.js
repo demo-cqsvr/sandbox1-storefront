@@ -10,6 +10,7 @@ import {
   loadSections,
   loadCSS,
   buildBlock,
+  readBlockConfig,
 } from './aem.js';
 import {
   loadCommerceEager,
@@ -238,6 +239,27 @@ function buildStorefrontProduct(main) {
   document.head.querySelector('link[rel="canonical"]')?.remove();
 }
 
+/** Connect the active Commerce PDP recommendation unit to all product pages. */
+function buildProductRecommendations(main) {
+  if (!main.querySelector('.product-details')) return;
+  const sampleId = 'cf042e53-7efb-4a7e-b1bd-4f87d5c6ca84';
+  const activeId = 'cb0289f6-3a00-4c00-a0b7-dbd53270cd47';
+  const rows = [['recId', activeId]];
+  const existing = [...main.querySelectorAll('.product-recommendations')];
+  if (existing.length) {
+    existing.forEach((block) => {
+      const { recid } = readBlockConfig(block);
+      if (!recid || recid === sampleId) {
+        block.replaceChildren(...buildBlock('product-recommendations', rows).children);
+      }
+    });
+    return;
+  }
+  const section = document.createElement('div');
+  section.append(buildBlock('product-recommendations', rows));
+  main.append(section);
+}
+
 /**
  * Loads everything needed to get to LCP.
  * @param {Element} doc The container element
@@ -252,6 +274,7 @@ async function loadEager(doc) {
       await initializeCommerce();
       buildStorefrontHome(main);
       buildStorefrontProduct(main);
+      buildProductRecommendations(main);
       decorateMain(main);
       applyTemplates(doc);
       await loadCommerceEager();
