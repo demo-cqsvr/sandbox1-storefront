@@ -65,3 +65,50 @@
 .product-recommendations .dropin-image {
     object-fit: contain;
 }
+
+/* Let the page scroll naturally instead of nesting two-axis scroll areas. */
+.product-recommendations .recommendations-product-list__content {
+    overflow: visible;
+    height: auto;
+    max-height: none;
+}
+
+.product-recommendations .dropin-content-grid__content {
+    display: block;
+    width: 100%;
+}
+
+.product-recommendations .recommendations-carousel__content {
+    display: grid;
+    overflow: visible;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+    width: 100%;
+}
+
+.product-recommendations .recommendations-carousel__content > *,
+.product-recommendations .dropin-product-item-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.product-recommendations .dropin-product-item-card__title {
+    overflow-wrap: anywhere;
+}
+
+.product-recommendations .footer__wrapper {
+    flex-wrap: wrap;
+}
+
+@media (min-width: 600px) {
+    .product-recommendations .recommendations-carousel__content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 900px) {
+    .product-recommendations .recommendations-carousel__content {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
