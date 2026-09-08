@@ -112,3 +112,11 @@
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
+
+.product-recommendations .recommendations-product-list__heading,
+.product-recommendations .recommendations-product-list__heading h2 {
+    font-weight: 700;
+    font-size: clamp(24px, 2vw, 28px);
+    line-height: 1.35;
+    color: var(--color-neutral-800);
+}
