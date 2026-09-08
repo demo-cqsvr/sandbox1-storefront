@@ -127,3 +127,14 @@
   overflow: hidden;
   white-space: nowrap;
 }
+
+.product-details .product-details__unavailable {
+  padding: var(--spacing-xxbig) 0;
+  min-height: 240px;
+}
+
+/* Imported product attributes can contain long URLs without word breaks. */
+.product-details .product-details__attributes,
+.product-details .product-details__description {
+  overflow-wrap: anywhere;
+}

@@ -12,6 +12,7 @@ No block configuration is read via `readBlockConfig()`. The block uses dynamic p
 
 ### URL Parameters
 
+- `sku` - Exact catalog SKU used by the shared `/products/default` template
 - `itemUid` - Item UID for cart update mode (when present, enables update mode instead of add mode)
 - `optionsUIDs` - Product option UIDs for wishlist context (empty string treated as base product with no options)
 
@@ -60,3 +61,7 @@ No events are emitted by this block. -->
 - **Image Rendering Errors**: If product images fail to load, the image slots handle fallback behavior
 - **JSON-LD Errors**: If structured data generation fails, falls back to basic meta tags
 - **Fallback Behavior**: Always falls back to appropriate mode based on URL parameters and cart state
+
+## Shared product template
+
+`/products/default?sku=...` keeps only the product-details block before decoration and clears the template's sample product metadata. The PDP initializer fetches the requested SKU through Catalog Service. Returned product data supplies the title, metadata, structured data, and canonical product URL. Unknown SKUs show “Product not found” with a search link; service failures show a retry link. Both states omit purchase controls and request no indexing. Other authored product pages retain their content.

@@ -14,6 +14,8 @@ import {
 } from '../commerce.js';
 import { getMetadata } from '../aem.js';
 
+export const productLoadState = { status: 'loading' };
+
 export const IMAGES_SIZES = {
   width: 960,
   height: 1191,
@@ -88,10 +90,24 @@ await initializeDropin(async () => {
     return loadErrorPage();
   }
 
-  const [product, labels] = await Promise.all([
-    fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
-    fetchPlaceholders('placeholders/pdp.json'),
-  ]);
+  let product;
+  let labels;
+  try {
+    [product, labels] = await Promise.all([
+      fetchProductData(sku, { optionsUIDs, skipTransform: true }).then(preloadImageMiddleware),
+      fetchPlaceholders('placeholders/pdp.json'),
+    ]);
+  } catch (error) {
+    productLoadState.status = 'error';
+    console.error('Unable to load product data:', error);
+    return undefined;
+  }
+
+  if (!product?.sku && !IS_UE) {
+    productLoadState.status = 'not-found';
+    return undefined;
+  }
+  productLoadState.status = 'ready';
 
   const langDefinitions = {
     default: {
