@@ -68,3 +68,5 @@ All product detail pages receive the store's active `viewed-viewed` unit (`cb028
 Results render inside the tracked list container to avoid duplicate rendering when page context changes. Recommendation images retain their aspect ratio, and product links use the shared internal EDS product route. The existing drop-in publishes recommendation impression/view/click events and supports adding recommended products to the cart.
 
 The currently configured service has a product-page unit only. Home, category and cart recommendation units are not configured by this change.
+
+Recommendation cards use a responsive grid (one column on phones, two from 600px, three from 900px). The block grows with its content; navigation uses the page's normal scrolling rather than a nested horizontal/vertical scroll area.
