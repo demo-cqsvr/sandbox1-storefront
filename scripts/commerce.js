@@ -9,6 +9,7 @@ import {
 import { events } from '@dropins/tools/event-bus.js';
 import { FetchGraphQL } from '@dropins/tools/fetch-graphql.js';
 import { getCatalogProductLink } from './catalog-routes.js';
+import migrateCommerceBackend from './backend-config.js';
 import {
   getMetadata,
   readBlockConfig,
@@ -559,11 +560,11 @@ export async function getConfigFromSession() {
     ) {
       throw new Error('Config expired');
     }
-    return parsedConfig;
+    return migrateCommerceBackend(parsedConfig);
   } catch (e) {
     const config = await fetch(configURL);
     if (!config.ok) throw new Error('Failed to fetch config');
-    const configJSON = await config.json();
+    const configJSON = migrateCommerceBackend(await config.json());
     configJSON[':expiry'] = Math.round(Date.now() / 1000) + 7200;
     window.sessionStorage.setItem('config', JSON.stringify(configJSON));
     return configJSON;
