@@ -20,6 +20,7 @@ import { fetchPlaceholders, getProductLink } from '../../scripts/commerce.js';
 import { categories, getCategoryLink } from '../../scripts/catalog-routes.js';
 import { getCategoryContext } from './category-context.js';
 import { getSearchStateFromUrl, applySearchStateToUrl } from './search-url.js';
+import { categoryFacetSlots } from './facet-labels.js';
 
 // Initializers
 import '../../scripts/initializers/search.js';
@@ -244,7 +245,7 @@ export default async function decorate(block) {
     })($viewFacets),
 
     // Facets
-    provider.render(Facets, {})($facets),
+    provider.render(Facets, { slots: categoryFacetSlots })($facets),
     // Product List
     provider.render(SearchResults, {
       routeProduct: (product) => getProductLink(product.urlKey, product.sku),
