@@ -80,3 +80,11 @@ an empty catalog phrase removes a stale `q` parameter.
 Run `node --test blocks/product-list-page/category-context.test.mjs` for category
 resolution, rejection, and category URL persistence coverage. Verify the actual
 category request and filter/pagination interactions in the storefront browser.
+
+Category facet labels use the same category snapshot through `facet-labels.js`.
+The `FacetBucketLabel` and `SelectedFacets` slots display category names instead
+of internal paths, including parent names when category names are duplicated.
+Bucket counts, API filter values, URL values, and default removal handlers are
+preserved. Unrecognized categories and non-category facets keep Drop-in labels.
+Selected button labels are updated after the Drop-in DOM commit; no additional
+search requests or attribute transformations are introduced.
